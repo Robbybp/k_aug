@@ -88,18 +88,15 @@ include_directories(${PROJECT_BINARY_DIR})
 
 # coinor stuff
 # PLEASE MAKE SURE THIS ARE IN THE CORRECT DIRECTORY
-include_directories(/usr/local/include/coin-or/asl)
-find_library(COINASL NAMES asl ${libaslname} HINTS /usr/local/lib REQUIRED)
-find_library(COINHSL ${libhslname} HINTS /usr/local/lib REQUIRED)
-find_library(COINMETIS NAMES metis ${libmetisname} HINTS /usr/local/lib
+include_directories(/home/rparker1/Solvers/CoinIpopt/build/include/coin/ThirdParty)
+find_library(COINASL NAMES asl ${libaslname} HINTS /home/rparker1/Solvers/CoinIpopt/build/lib /usr/local/lib REQUIRED)
+find_library(COINHSL ${libhslname} HINTS /home/rparker1/Solvers/CoinIpopt/build/lib /usr/local/lib REQUIRED)
+find_library(COINMETIS NAMES metis ${libmetisname} HINTS /home/rparker1/Solvers/CoinIpopt/build/lib /usr/local/lib
 /usr/local/opt/metis/lib/ REQUIRED)
 # openblas/blas stuff
-find_library(BLAS NAMES blas ${libblasname} HINTS /usr/lib /usr/local/lib
-REQUIRED)
-find_library(LAPACK NAMES lapack ${liblapackname} HINTS /usr/lib
-/usr/local/lib REQUIRED)
-find_library(GFORTRAN names gfortran HINTS /usr/local/opt/gcc/lib/gcc/10
-REQUIRED)  #: ATTENTION MAC OS X USERS!
+find_library(BLAS NAMES blas ${libblasname} HINTS /home/rparker1/Solvers/CoinIpopt/build/lib /usr/lib /usr/local/lib REQUIRED)
+find_library(LAPACK NAMES lapack ${liblapackname} HINTS /home/rparker1/Solvers/CoinIpopt/build/lib /usr/lib /usr/local/lib REQUIRED)
+find_library(GFORTRAN NAMES gfortran HINTS /usr/lib/x86_64-linux-gnu /usr/lib/gcc/x86_64-linux-gnu/7 /usr/local/opt/gcc/lib/gcc/10 REQUIRED)  #: ATTENTION MAC OS X USERS!
  
 
  
@@ -148,12 +145,14 @@ add_executable(k_aug ${SRC_FILES})
 add_executable(dot_sens src/k_aug/dot_driver/dot_driver.c)
 if (USE_MC30)
     #target_link_libraries(k_aug amplsolver m dl gfortran dmumps mumps_common
-pthread esmumps scotch scotcherr metis pord mpiseq mc30 gfortran openblas
-ma57)
+#pthread esmumps scotch scotcherr metis pord mpiseq mc30 gfortran openblas
+#ma57)
     target_link_libraries(k_aug mc30 ${COINASL} ${COINHSL} ${COINMETIS}
 ${LAPACK} ${BLAS} ${GFORTRAN} m ${LDL})
     message("LINKING MC30 ${USE_MC30}")
 else(USE_MC30)
+message(${LAPACK})
+message(${GFORTRAN})
 target_link_libraries(k_aug ${COINASL} ${COINHSL} ${COINMETIS}  ${LAPACK}
 ${BLAS} ${GFORTRAN} m ${LDL})
 endif(USE_MC30)
